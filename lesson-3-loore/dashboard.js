@@ -34,7 +34,10 @@ function showDetail(post){
   const u=new URL(post.url), id=u.searchParams.get("v")||u.pathname.split("/").pop();
   if(/^[A-Za-z0-9_-]{11}$/.test(id))embed="https://www.youtube-nocookie.com/embed/"+id;
  }
- if(download && (detail.mediaType||"video").startsWith("video")){
+ const imageDownload=download && ((detail.mediaType||"").startsWith("image") || /\.(jpg|jpeg|png|webp)(?:$|\?)/i.test(download));
+ const photos=[...(detail.images||[]),...(imageDownload ? [download] : [])];
+ for(const photo of photos){const url=mediaURL(typeof photo==="string"?photo:photo.url);if(!url)continue;const img=node("img",null,"post-image");img.alt="Изображение публикации";img.src=url;body.append(img);}
+ if(download && !imageDownload){
   const v=node("video");v.controls=true;v.preload="metadata";v.src=download;body.append(v);
  }else if(embed){
   const f=node("iframe");f.title="Плеер публикации";f.src=embed;f.allowFullscreen=true;f.referrerPolicy="strict-origin-when-cross-origin";body.append(f);
