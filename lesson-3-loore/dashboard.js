@@ -18,7 +18,7 @@ function external(text, url) {
 let chart, details={}, snapshotEnd, snapshotStart;
 function mediaURL(value) {
   if (typeof value !== "string" || !value.trim()) return null;
-  const u=new URL(value, location.href);
+  const u=new URL(value, document.baseURI);
   return (u.protocol==="https:" || u.origin===location.origin) ? u.href : null;
 }
 function showDetail(post){
@@ -44,7 +44,20 @@ function showDetail(post){
  }
  if(download){const a=node("a","Скачать файл");a.href=download;a.download="";const line=node("p");line.append(a);body.append(line);}
  body.append(node("h3","Раскадровка"));
- const frames=detail.frames||[]; if(frames.length){const strip=node("div",null,"frames");for(const frame of frames){const url=mediaURL(frame.url);if(!url)continue;const fig=node("figure"),img=node("img");img.src=url;img.alt="Кадр "+(frame.time??"");fig.append(img,node("figcaption",String(frame.time??"")));strip.append(fig);}body.append(strip);}else body.append(node("p","Раскадровка недоступна.","hint"));
+ const frames=detail.frames||[];
+ if(frames.length){
+   body.append(node("p","Нажмите кадр, чтобы открыть изображение в полном размере.","hint"));
+   const strip=node("div",null,"frames");
+   for(const frame of frames){
+     const url=mediaURL(frame.url);
+     if(!url)continue;
+     const fig=node("figure"),img=node("img"),link=node("a");
+     link.href=url;link.target="_blank";link.rel="noopener noreferrer";
+     img.src=url;img.alt="Открыть кадр "+(frame.time??"");link.append(img);
+     fig.append(link,node("figcaption",String(frame.time??"")));strip.append(fig);
+   }
+   body.append(strip);
+ }else body.append(node("p","Раскадровка недоступна.","hint"));
  body.append(node("h3","Транскрипт"),node("p",detail.transcript||"Транскрипт недоступен."));
  dialog.showModal();
 }
@@ -89,5 +102,6 @@ async function start(){
  }
  for(const key of ["Все",...channels.map(c=>c.platform)]){const b=node("button",key);b.dataset.key=key;b.onclick=()=>display(channels,key);el("filters").append(b);}
  el("metrics").hidden=false;el("history").hidden=false;display(channels,"Все");el("status").hidden=true;
+ setupAnalytics(data,snapshotStart,snapshotEnd);
 }
 start().catch(()=>{el("status").textContent="Не удалось загрузить данные. Обновите страницу, чтобы повторить.";});

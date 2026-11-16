@@ -56,4 +56,4 @@ python3 -m http.server 8000
 
 ## Урок 3 · Анализ социальных сетей с Loore
 
-[Открыть дашборд Оскара Хартманна](https://demo-site-f9f703.pipecore.io/lesson-3-loore/dashboard.html) · [Материалы урока и обновление данных](lesson-3-loore/)
+[Открыть дашборд Оскара Хартманна](https://demo-site-f9f703.pipecore.io/lesson-3-loore/) · [Материалы урока и обновление данных](lesson-3-loore/)
