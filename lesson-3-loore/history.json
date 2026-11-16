@@ -1,0 +1,83 @@
+{
+  "snapshots": [
+    {
+      "date": "2026-11-16",
+      "channels": [
+        {
+          "platform": "YouTube",
+          "followers": 608000,
+          "posts": [
+            {
+              "url": "https://www.youtube.com/watch?v=zOE1UbMxGwY",
+              "views": 133272
+            }
+          ]
+        },
+        {
+          "platform": "Telegram",
+          "followers": 93754,
+          "posts": [
+            {
+              "url": "https://t.me/Oskar_Hartmann/3301",
+              "views": 2490
+            },
+            {
+              "url": "https://t.me/Oskar_Hartmann/3300",
+              "views": 8530
+            },
+            {
+              "url": "https://t.me/Oskar_Hartmann/3299",
+              "views": 10900
+            },
+            {
+              "url": "https://t.me/Oskar_Hartmann/3298",
+              "views": 13000
+            },
+            {
+              "url": "https://t.me/Oskar_Hartmann/3296",
+              "views": 12900
+            },
+            {
+              "url": "https://t.me/Oskar_Hartmann/3295",
+              "views": 14300
+            },
+            {
+              "url": "https://t.me/Oskar_Hartmann/3294",
+              "views": 14900
+            }
+          ]
+        },
+        {
+          "platform": "Instagram",
+          "followers": 790677,
+          "posts": [
+            {
+              "url": "https://www.instagram.com/reel/DfxbLzEIlZl/",
+              "views": 221941
+            },
+            {
+              "url": "https://www.instagram.com/reel/DfzasX5RVuO/",
+              "views": 16868
+            },
+            {
+              "url": "https://www.instagram.com/reel/DfxT5ZsIGIK/",
+              "views": 411516
+            },
+            {
+              "url": "https://www.instagram.com/reel/DfuKAaQBd_D/",
+              "views": 52727
+            },
+            {
+              "url": "https://www.instagram.com/reel/DfkEh4JoJ9-/",
+              "views": 347111
+            },
+            {
+              "url": "https://www.instagram.com/reel/DfU1gZ1IruZ/",
+              "views": 524089
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

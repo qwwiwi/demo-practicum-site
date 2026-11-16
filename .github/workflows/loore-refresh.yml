@@ -1,0 +1,54 @@
+name: Refresh Loore social metrics
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: loore-social-metrics
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BRANCH: feature/loore-daily-metrics
+      BASE: ${{ github.event.repository.default_branch }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 0
+      - name: Prepare the data branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if git show-ref --verify --quiet "refs/remotes/origin/$BRANCH"; then
+            git switch -c "$BRANCH" --track "origin/$BRANCH"
+            git merge --no-edit "origin/$BASE"
+          else
+            git switch -c "$BRANCH"
+          fi
+      - name: Fetch current counters and record the observation
+        working-directory: lesson-3-loore
+        env:
+          LOORE_API_KEY: ${{ secrets.LOORE_API_KEY }}
+        run: |
+          test -n "$LOORE_API_KEY" || { echo "::error::Configure the LOORE_API_KEY repository secret"; exit 1; }
+          python3 scripts/refresh-oscar.py oscar.json
+          python3 scripts/update-history.py oscar.json history.json
+      - name: Update the data pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git add lesson-3-loore/oscar.json lesson-3-loore/history.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Record public social metrics"
+          fi
+          git push origin "HEAD:refs/heads/$BRANCH"
+          if ! gh pr view "$BRANCH" --json state --jq .state 2>/dev/null | grep -qx OPEN; then
+            gh pr create --base "$BASE" --head "$BRANCH" --title "Refresh Oscar Hartmann social metrics" --body "Updates the dashboard index and daily Moscow-time observations from the public channels."
+          fi
