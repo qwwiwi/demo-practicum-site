@@ -18,3 +18,5 @@ The refresh uses Loore credits. Review coverage and the date window, then publis
 - [Oscar Hartmann](https://oskarhartmann.com/ru)
 - [Loore tool catalog](https://loore.ai/docs/tools/)
 - [Chart.js](https://github.com/chartjs/Chart.js) — MIT; bundled locally under vendor/.
+
+Public Instagram carousel views are excluded from view comparisons. Views in the Instagram section cover Reels only. Missing engagement counters stay null.
