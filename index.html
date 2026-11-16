@@ -8,13 +8,14 @@
   <title>Северная поляна — домики в Подмосковье</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preload" as="image" href="images/hero.jpg">
+  <script src="gallery.js" defer></script>
   <script src="booking.js" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Перейти к содержанию</a>
 <header class="site-header">
   <a href="#main" class="brand"><span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>Северная поляна</a>
-  <nav aria-label="Главное меню"><a href="#houses">Домики</a><a href="#place">Расположение</a></nav>
+  <nav aria-label="Главное меню"><a href="#houses">Домики</a><a href="#gallery">Галерея</a><a href="#services">Услуги</a><a href="#place">Расположение</a></nav>
   <a class="pill top-cta" href="#booking">Выбрать даты</a>
 </header>
 <main id="main">
@@ -35,6 +36,47 @@
       <article class="house"><a class="house-photo" href="#booking" data-house="1" aria-label="Выбрать домик Берёза"><img src="images/cabin2.jpg" loading="lazy" alt="Домик для загородного отдыха"></a><div class="house-info"><h3>Берёза</h3><span>до 4 гостей</span></div><p>Для семьи. Отдельная спальня, раскладной диван и кухня для общего завтрака.</p><div class="rates"><span>Будни <b>8 500 ₽ / ночь</b></span><span>Пт — Вс <b>21 000 ₽ / 2 ночи</b></span></div><a class="house-link" href="#booking" data-house="1">Рассчитать стоимость <span aria-hidden="true">↗</span></a></article>
       <article class="house"><a class="house-photo" href="#booking" data-house="2" aria-label="Выбрать домик Кедр"><img src="images/cabin3.jpg" loading="lazy" alt="Загородный дом для компании"></a><div class="house-info"><h3>Кедр</h3><span>до 6 гостей</span></div><p>Для компании. Две спальни, диван в гостиной и большой стол для долгого ужина.</p><div class="rates"><span>Будни <b>11 000 ₽ / ночь</b></span><span>Пт — Вс <b>28 000 ₽ / 2 ночи</b></span></div><a class="house-link" href="#booking" data-house="2">Рассчитать стоимость <span aria-hidden="true">↗</span></a></article>
     </div>
+  </section>
+  <section id="gallery" class="site-gallery" aria-labelledby="gallery-title">
+    <div class="section-head"><h2 id="gallery-title">На территории</h2><p>Фотогалерея демонстрационного глэмпинга</p></div>
+    <div class="gallery-grid">
+      <a class="gallery-photo" href="images/grounds.jpg" aria-label="Увеличить фото «Лесная поляна»">
+        <img src="images/grounds.jpg" loading="lazy" alt="Стол для пикника среди деревьев">
+        <span class="photo-label">Лесная поляна</span><span class="photo-expand" aria-hidden="true">⤢</span>
+      </a>
+      <a class="gallery-photo" href="images/sauna.jpg" aria-label="Увеличить фото «В парной»">
+        <img src="images/sauna.jpg" loading="lazy" alt="Деревянные полки в парной">
+        <span class="photo-label">В парной</span><span class="photo-expand" aria-hidden="true">⤢</span>
+      </a>
+      <a class="gallery-photo" href="images/trail.jpg" aria-label="Увеличить фото «Берёзовая тропа»">
+        <img src="images/trail.jpg" loading="lazy" alt="Деревянный настил среди берёз">
+        <span class="photo-label">Берёзовая тропа</span><span class="photo-expand" aria-hidden="true">⤢</span>
+      </a>
+      <a class="gallery-photo" href="images/grill.jpg" aria-label="Увеличить фото «У мангала»">
+        <img src="images/grill.jpg" loading="lazy" alt="Шашлык над раскалёнными углями">
+        <span class="photo-label">У мангала</span><span class="photo-expand" aria-hidden="true">⤢</span>
+      </a>
+    </div>
+    <dialog class="photo-viewer" aria-label="Просмотр фотографий">
+      <button type="button" class="viewer-close" aria-label="Закрыть фотографию" autofocus>×</button>
+      <figure><img alt=""><figcaption aria-live="polite"></figcaption></figure>
+      <div class="viewer-controls">
+        <button type="button" data-direction="-1" aria-label="Предыдущее фото">←</button>
+        <span class="viewer-count"></span>
+        <button type="button" data-direction="1" aria-label="Следующее фото">→</button>
+      </div>
+    </dialog>
+  </section>
+  <section id="services" class="site-services" aria-labelledby="services-title">
+    <div><h2 id="services-title">Чем заняться</h2>
+      <p>Добавьте к поездке баню, вечер у мангала или день на велосипедах.</p>
+      <a class="house-link" href="#booking">Выбрать услуги при бронировании <span aria-hidden="true">↓</span></a>
+    </div>
+    <dl class="service-prices">
+      <div><dt>Баня</dt><dd><strong>4 000 ₽</strong> за 2 часа</dd></div>
+      <div><dt>Мангальный набор</dt><dd><strong>1 500 ₽</strong> за комплект</dd></div>
+      <div><dt>Прокат велосипедов</dt><dd><strong>1 200 ₽</strong> за пару на день</dd></div>
+    </dl>
   </section>
   <section id="booking"></section>
   <section id="place" class="place"><div><p class="locality"><span class="pin" aria-hidden="true"></span> Расположение</p><h2>Север Подмосковья</h2></div><div><p>Ориентир — квартал Вашутино в Химках, по направлению к Шереметьево. На карте отмечен район демонстрационного глэмпинга.</p><a class="house-link" href="https://yandex.ru/maps/?text=Химки%20квартал%20Вашутино" target="_blank" rel="noopener noreferrer">Открыть район на карте <span aria-hidden="true">↗</span></a></div></section>

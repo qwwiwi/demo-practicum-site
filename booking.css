@@ -23,3 +23,12 @@
 @media(max-width:650px){.stay-widget{grid-template-columns:1fr}.stay-summary{border-left:0;border-top:1px solid #c3c5b9}}
 
 .stay-calendar .stay-weekend{margin-top:12px;background:transparent;border:1px solid #929c8c;border-radius:3px;padding:6px 12px}
+
+.stay-extras{border:0;padding:0;margin:4px 0;min-width:0}
+.stay-extras legend{padding:0;margin:0 0 6px;font-weight:600}
+.stay-summary .stay-extra{display:flex;align-items:flex-start;gap:10px;padding:7px 0;cursor:pointer;line-height:1.3}
+.stay-extra input{accent-color:#254737;flex:none;width:18px;height:18px;margin:1px 0 0}
+.stay-extra small{display:block;color:#526050}
+.stay-breakdown{margin:10px 0;border-top:1px solid #c3c5b9;padding-top:6px}
+.stay-breakdown div{display:flex;justify-content:space-between;gap:8px;margin:4px 0;font-size:.9rem}
+.stay-breakdown dd{margin:0;white-space:nowrap}
