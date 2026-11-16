@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#263d32">
+  <meta name="description" content="Северная поляна — учебный глэмпинг в Подмосковье. Выберите домик, даты поездки и посмотрите стоимость выходных.">
+  <title>Северная поляна — домики в Подмосковье</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preload" as="image" href="images/hero.jpg">
+  <script src="booking.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Перейти к содержанию</a>
+<header class="site-header">
+  <a href="#main" class="brand"><span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>Северная поляна</a>
+  <nav aria-label="Главное меню"><a href="#houses">Домики</a><a href="#place">Расположение</a></nav>
+  <a class="pill top-cta" href="#booking">Выбрать даты</a>
+</header>
+<main id="main">
+  <section class="hero" aria-labelledby="hero-title">
+    <img class="hero-photo" src="images/hero.jpg" alt="" fetchpriority="high">
+    <div class="hero-copy">
+      <p class="locality"><span class="pin" aria-hidden="true"></span> Московская область, Химки</p>
+      <h1 id="hero-title">На выходные<br>в лес.</h1>
+      <p class="hero-lead">Три домика на Северной поляне. Выберите свой и посмотрите, сколько будут стоить ваши выходные.</p>
+      <a class="pill hero-cta" href="#houses">Посмотреть домики <span aria-hidden="true">↓</span></a>
+    </div>
+    <span class="hero-foot">Демонстрационный глэмпинг</span>
+  </section>
+  <section id="houses" class="houses" aria-labelledby="houses-title">
+    <header class="section-head"><h2 id="houses-title">Домики на поляне</h2><p>Для двоих, для семьи или для всей компании.<br>Стоимость поездки можно рассчитать по датам.</p></header>
+    <div class="house-grid">
+      <article class="house"><a class="house-photo" href="#booking" data-house="0" aria-label="Выбрать домик Сосна"><img src="images/cabin1.jpg" loading="lazy" alt="Деревянный домик на природе"></a><div class="house-info"><h3>Сосна</h3><span>2 гостя</span></div><p>Для двоих. Двуспальная кровать и небольшой стол для завтрака у окна.</p><div class="rates"><span>Будни <b>6 000 ₽ / ночь</b></span><span>Пт — Вс <b>16 000 ₽ / 2 ночи</b></span></div><a class="house-link" href="#booking" data-house="0">Рассчитать стоимость <span aria-hidden="true">↗</span></a></article>
+      <article class="house"><a class="house-photo" href="#booking" data-house="1" aria-label="Выбрать домик Берёза"><img src="images/cabin2.jpg" loading="lazy" alt="Домик для загородного отдыха"></a><div class="house-info"><h3>Берёза</h3><span>до 4 гостей</span></div><p>Для семьи. Отдельная спальня, раскладной диван и кухня для общего завтрака.</p><div class="rates"><span>Будни <b>8 500 ₽ / ночь</b></span><span>Пт — Вс <b>21 000 ₽ / 2 ночи</b></span></div><a class="house-link" href="#booking" data-house="1">Рассчитать стоимость <span aria-hidden="true">↗</span></a></article>
+      <article class="house"><a class="house-photo" href="#booking" data-house="2" aria-label="Выбрать домик Кедр"><img src="images/cabin3.jpg" loading="lazy" alt="Загородный дом для компании"></a><div class="house-info"><h3>Кедр</h3><span>до 6 гостей</span></div><p>Для компании. Две спальни, диван в гостиной и большой стол для долгого ужина.</p><div class="rates"><span>Будни <b>11 000 ₽ / ночь</b></span><span>Пт — Вс <b>28 000 ₽ / 2 ночи</b></span></div><a class="house-link" href="#booking" data-house="2">Рассчитать стоимость <span aria-hidden="true">↗</span></a></article>
+    </div>
+  </section>
+  <section id="booking"></section>
+  <section id="place" class="place"><div><p class="locality"><span class="pin" aria-hidden="true"></span> Расположение</p><h2>Север Подмосковья</h2></div><div><p>Ориентир — квартал Вашутино в Химках, по направлению к Шереметьево. На карте отмечен район демонстрационного глэмпинга.</p><a class="house-link" href="https://yandex.ru/maps/?text=Химки%20квартал%20Вашутино" target="_blank" rel="noopener noreferrer">Открыть район на карте <span aria-hidden="true">↗</span></a></div></section>
+</main>
+<footer class="site-footer"><a href="#main" class="brand"><span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>Северная поляна</a><p>Учебный проект. Домики, тарифы и бронирование демонстрационные.</p></footer>
+</body>
+</html>
