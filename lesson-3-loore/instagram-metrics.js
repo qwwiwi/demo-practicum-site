@@ -7,6 +7,7 @@ function appendInstagramMetrics(body, post) {
   if (post.platform !== "Instagram") return;
   const strip = node("dl", null, "reel-metric-strip");
   for (const [key, title] of reelMetrics) {
+    if (post.kind === "carousel" && key === "views") continue;
     const pair = node("div");
     pair.append(node("dt", title), node("dd", hasNumber(post[key]) ? fmt.format(post[key]) : "Нет данных"));
     strip.append(pair);
@@ -27,15 +28,20 @@ function setupInstagramMetrics(data) {
   const period = node("p","Выберите формат и показатель. Нажмите на публикацию, чтобы открыть её карточку.","hint");
   host.append(node("h2","Сравнение публикаций Instagram"),period,formats,controls,status,chart);
   function render(key) {
+    if (kind === "carousel" && key === "views") key = "likes";
     metric = key;
     const all = channel.posts.filter(p => kind === "all" || (p.kind || "reel") === kind);
     for (const button of formats.children) button.setAttribute("aria-pressed",String(button.dataset.kind === kind));
-    const known = all.filter(p => hasNumber(p[key])).sort((a,b) => b[key]-a[key]);
-    const missing = all.filter(p => !hasNumber(p[key]));
+    const eligible = key === "views" ? all.filter(p => p.kind !== "carousel") : all;
+    const known = eligible.filter(p => hasNumber(p[key])).sort((a,b) => b[key]-a[key]);
+    const missing = eligible.filter(p => !hasNumber(p[key]));
     const total = known.reduce((sum,p) => sum + p[key],0);
     const max = known[0]?.[key] || 1;
-    status.textContent = "Данные для "+known.length+" из "+all.length+" публикаций"+(known.length ? " · Сумма "+fmt.format(total) : " · Счётчик недоступен");
-    for (const button of controls.children) button.setAttribute("aria-pressed",String(button.dataset.key === key));
+    status.textContent = "Данные для "+known.length+" из "+eligible.length+(key === "views" ? " Reels · просмотры только для Reels" : " публикаций")+(known.length ? " · Сумма "+fmt.format(total) : " · Счётчик недоступен");
+    for (const button of controls.children) {
+      button.hidden = kind === "carousel" && button.dataset.key === "views";
+      button.setAttribute("aria-pressed",String(button.dataset.key === key));
+    }
     chart.replaceChildren();
     for (const post of [...known,...missing]) {
       const row = node("button",null,"ig-rank");

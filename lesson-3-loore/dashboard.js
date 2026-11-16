@@ -109,6 +109,7 @@ function display(channels, selected) {
     const action=node("button",p.title||"Посмотреть публикацию","post-btn");action.onclick=()=>showDetail(p);left.append(node("div",p.platform+(p.kind==="carousel"?" · Карусель":"")+" · "+day(Date.parse(p.date)),"meta"),action);
     const origin=node("div",null,"meta");origin.append(external("Оригинал",p.url));left.append(origin);
     const count=node("strong",hasNumber(p.views)?fmt.format(p.views):"—");
+    if (p.kind === "carousel") count.hidden = true;
     count.title=hasNumber(p.views)?"Просмотры":"Число просмотров недоступно";
     row.append(left,count);el("rows").append(row);
   }
