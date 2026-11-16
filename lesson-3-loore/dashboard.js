@@ -26,9 +26,29 @@ function showDetail(post){
  body.replaceChildren();el("detail-title").textContent=post.title||"Публикация";
  el("detail-meta").textContent=post.platform+" · "+day(Date.parse(post.date));
  body.append(external("Открыть оригинал",post.url));
+ if(typeof appendInstagramMetrics==="function")appendInstagramMetrics(body,post);
  const detail=details[post.url]||{},download=mediaURL(detail.download);
  const fullText=detail.text||post.text;
  if(fullText && fullText!==post.title){body.append(node("h3","Текст публикации"),node("p",fullText));}
+ if(post.kind==="carousel"){
+   const slides=detail.slides||[];
+   body.append(node("h3","Слайды карусели"));
+   const gallery=node("div",null,"slide-gallery");
+   for(const [i,slide] of slides.entries()){
+     const url=mediaURL(typeof slide==="string"?slide:slide.url);
+     if(!url)continue;
+     const figure=node("figure");
+     const label="Слайд "+(i+1);
+     if(slide.kind==="video" || /\.mp4($|\?)/i.test(url)){
+       const video=node("video");video.src=url;video.controls=true;video.preload="metadata";figure.append(video);
+     }else{
+       const link=node("a"),img=node("img");link.href=url;link.target="_blank";link.rel="noopener noreferrer";img.src=url;img.alt=label;link.append(img);figure.append(link);
+     }
+     figure.append(node("figcaption",label));gallery.append(figure);
+   }
+   body.append(gallery.childElementCount?gallery:node("p","Слайды доступны по ссылке на оригинал.","hint"));
+   dialog.showModal();return;
+ }
  let embed=mediaURL(detail.embed);
  if(post.platform==="YouTube"){
   const u=new URL(post.url), id=u.searchParams.get("v")||u.pathname.split("/").pop();
@@ -65,21 +85,28 @@ el("close-detail").onclick=()=>el("detail").close();
 el("detail").addEventListener("close",()=>el("detail-body").replaceChildren());
 function display(channels, selected) {
   for (const b of el("filters").children) b.setAttribute("aria-pressed",String(b.dataset.key === selected));
+  const days=Number(el("post-days").value);
+  const rangeStart=snapshotStart+(7-days)*86400000;
+  const relative=el("post-scale").value==="median";
+  el("period").textContent=day(rangeStart)+" — "+day(snapshotEnd)+" (МСК)"+(relative?" · 1× соответствует медиане площадки за выбранный период":"");
   const visible=channels.filter(c=>selected==="Все" || c.platform===selected);
-  const posts=visible.flatMap(c=>c.posts.map(p=>({...p,platform:c.platform}))).filter(p=>Date.parse(p.date)>=snapshotStart && Date.parse(p.date)<=snapshotEnd).sort((a,b)=>Date.parse(b.date)-Date.parse(a.date));
+  const posts=visible.flatMap(c=>c.posts.map(p=>({...p,platform:c.platform}))).filter(p=>Date.parse(p.date)>=rangeStart && Date.parse(p.date)<=snapshotEnd).sort((a,b)=>Date.parse(b.date)-Date.parse(a.date));
+  if(el("post-order").value==="views")posts.sort((a,b)=>(b.views??-1)-(a.views??-1));
   el("legend").replaceChildren();
   const datasets=visible.map(c=>{
     const color=colors[c.platform.toLowerCase()] || "#555";
     const label=node("span"); const dot=node("i",null,"dot");dot.style.background=color;label.append(dot,c.platform); el("legend").append(label);
-    return {label:c.platform,backgroundColor:color,pointRadius:5,pointHoverRadius:7,data:posts.filter(p=>p.platform===c.platform && hasNumber(p.views)).map(p=>({x:Date.parse(p.date),y:p.views,title:p.title,post:p}))};
+    const rows=posts.filter(p=>p.platform===c.platform&&hasNumber(p.views));
+    const typical=median(rows.map(p=>p.views));
+    return {label:c.platform,backgroundColor:color,pointRadius:5,pointHoverRadius:7,data:rows.filter(()=>!relative||typical>0).map(p=>({x:Date.parse(p.date),y:relative?p.views/typical:p.views,title:p.title,post:p}))};
   });
   if(chart) chart.destroy();
-  if(window.Chart) chart=new Chart(el("graph"),{type:"scatter",data:{datasets},options:{onClick:(_event,items,active)=>{if(items.length){const i=items[0];showDetail(active.data.datasets[i.datasetIndex].data[i.index].post);}},responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:items=>items[0].raw.title,label:ctx=>day(ctx.raw.x)+" · "+fmt.format(ctx.raw.y)+" просмотров"}}},scales:{x:{type:"linear",min:snapshotStart,max:snapshotStart+7*86400000-1,ticks:{maxTicksLimit:5,callback:value=>new Date(value).toLocaleDateString("ru",{day:"numeric",month:"short",timeZone:"Europe/Moscow"})},grid:{display:false}},y:{beginAtZero:true,ticks:{maxTicksLimit:6,callback:value=>new Intl.NumberFormat("ru",{notation:"compact"}).format(value)}}}}});
+  if(window.Chart) chart=new Chart(el("graph"),{type:"scatter",data:{datasets},options:{onClick:(_event,items,active)=>{if(items.length){const i=items[0];showDetail(active.data.datasets[i.datasetIndex].data[i.index].post);}},responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:items=>items[0].raw.title,label:ctx=>day(ctx.raw.x)+" · "+(relative?fmt.format(ctx.raw.y)+"× медианы · ":"")+fmt.format(ctx.raw.post.views)+" просмотров"}}},scales:{x:{type:"linear",min:rangeStart,max:snapshotStart+7*86400000-1,ticks:{maxTicksLimit:5,callback:value=>new Date(value).toLocaleDateString("ru",{day:"numeric",month:"short",timeZone:"Europe/Moscow"})},grid:{display:false}},y:{beginAtZero:true,ticks:{maxTicksLimit:6,callback:value=>relative?fmt.format(value)+"×":new Intl.NumberFormat("ru",{notation:"compact"}).format(value)}}}}});
   el("rows").replaceChildren();
-  el("count").textContent="В выборке: "+posts.length+" · по дате публикации";
+  el("count").textContent="В выборке: "+posts.length+(el("post-order").value==="views"?" · по просмотрам":" · по дате публикации");
   for(const p of posts){
     const row=node("div",null,"row"),left=node("div");
-    const action=node("button",p.title||"Посмотреть публикацию","post-btn");action.onclick=()=>showDetail(p);left.append(node("div",p.platform+" · "+day(Date.parse(p.date)),"meta"),action);
+    const action=node("button",p.title||"Посмотреть публикацию","post-btn");action.onclick=()=>showDetail(p);left.append(node("div",p.platform+(p.kind==="carousel"?" · Карусель":"")+" · "+day(Date.parse(p.date)),"meta"),action);
     const origin=node("div",null,"meta");origin.append(external("Оригинал",p.url));left.append(origin);
     const count=node("strong",hasNumber(p.views)?fmt.format(p.views):"—");
     count.title=hasNumber(p.views)?"Просмотры":"Число просмотров недоступно";
@@ -100,7 +127,9 @@ async function start(){
  for(const c of channels){
    const card=node("div",null,"channel");card.append(external(c.platform,c.url),node("strong",hasNumber(c.followers)?fmt.format(c.followers):"—"),node("small","подписчиков"));el("channels").append(card);
  }
- for(const key of ["Все",...channels.map(c=>c.platform)]){const b=node("button",key);b.dataset.key=key;b.onclick=()=>display(channels,key);el("filters").append(b);}
+ let activePlatform="Все";
+ for(const id of ["post-days","post-scale","post-order"])el(id).onchange=()=>display(channels,activePlatform);
+ for(const key of ["Все",...channels.map(c=>c.platform)]){const b=node("button",key);b.dataset.key=key;b.onclick=()=>{activePlatform=key;display(channels,key);};el("filters").append(b);}
  el("metrics").hidden=false;el("history").hidden=false;display(channels,"Все");el("status").hidden=true;
  setupAnalytics(data,snapshotStart,snapshotEnd);
 }

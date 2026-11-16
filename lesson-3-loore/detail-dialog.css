@@ -1,0 +1,24 @@
+#detail[open] {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 0;
+  max-height: 90vh;
+  max-height: 90dvh;
+}
+#detail > .toolbar {
+  flex: none;
+  margin: 0;
+  padding: 10px clamp(12px, 3vw, 24px);
+  border-bottom: 1px solid var(--rule);
+}
+#close-detail { flex: none; min-height: 44px; }
+#detail .detail-scroll {
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 0 clamp(12px, 3vw, 24px) 18px;
+  scrollbar-gutter: stable;
+}
+html:has(#detail[open]) { overflow: hidden; }

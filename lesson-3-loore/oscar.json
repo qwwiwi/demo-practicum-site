@@ -79,39 +79,154 @@
       "posts": [
         {
           "date": "2026-11-16T15:42:35.000Z",
-          "views": 221941,
+          "views": 228274,
           "url": "https://www.instagram.com/reel/DfxbLzEIlZl/",
-          "title": "Ищите полный выпуск на YouTube по запросу «Арена Единорогов 12»"
+          "title": "Ищите полный выпуск на YouTube по запросу «Арена Единорогов 12»",
+          "likes": 2447,
+          "comments": 13,
+          "shares": 412,
+          "reposts": 30,
+          "saves": 678,
+          "metricsObservedAt": "2026-11-16T16:55:52.367572+00:00",
+          "kind": "reel"
         },
         {
           "date": "2026-11-16T13:03:53.000Z",
-          "views": 16868,
+          "views": 17250,
           "url": "https://www.instagram.com/reel/DfzasX5RVuO/",
-          "title": "Стамбул! 5 декабря! 🇹🇷 Форум Оскара Хартманна «Искусственный интеллект: эффект и эффективность». Вместе с международными экспертами поделимся практическим опытом, инструментами и реальными кейсами вне"
+          "title": "Стамбул! 5 декабря! 🇹🇷 Форум Оскара Хартманна «Искусственный интеллект: эффект и эффективность». Вместе с международными экспертами поделимся практическим опытом, инструментами и реальными кейсами вне",
+          "likes": 67,
+          "comments": 8,
+          "shares": 5,
+          "reposts": 2,
+          "saves": 11,
+          "metricsObservedAt": "2026-11-16T16:55:52.367568+00:00",
+          "kind": "reel"
         },
         {
           "date": "2026-11-15T17:25:29.000Z",
-          "views": 411516,
+          "views": 413334,
           "url": "https://www.instagram.com/reel/DfxT5ZsIGIK/",
-          "title": "Публикация без подписи"
+          "title": "Публикация без подписи",
+          "likes": 4631,
+          "comments": 54,
+          "shares": 907,
+          "reposts": 80,
+          "saves": 417,
+          "metricsObservedAt": "2026-11-16T16:55:52.258942+00:00",
+          "kind": "reel"
+        },
+        {
+          "kind": "carousel",
+          "date": "2026-11-15T07:52:29.000Z",
+          "url": "https://www.instagram.com/p/DfwSbbFiH9O/",
+          "title": "Меня всегда интересует вопрос, какие бизнес-модели уже работают в мире, но их еще никто не перенес на другие рынки? Иногда самое интересное не в том, чтобы придумать что-то новое, а в том, чтобы увиде",
+          "slideCount": 9,
+          "slideKinds": [
+            "image",
+            "image",
+            "image",
+            "image",
+            "image",
+            "image",
+            "image",
+            "image",
+            "image"
+          ],
+          "metricsObservedAt": "2026-11-16T16:57:19.179126+00:00",
+          "views": null,
+          "likes": 895,
+          "comments": 27,
+          "shares": 400,
+          "reposts": 15,
+          "saves": null
         },
         {
           "date": "2026-11-14T12:00:04.000Z",
-          "views": 52727,
+          "views": 52771,
           "url": "https://www.instagram.com/reel/DfuKAaQBd_D/",
-          "title": "Для меня важно не просто инвестировать, а создавать активы, которые приносят доход и одновременно улучшают качество жизни. Именно поэтому я выбрал юг Бали и проект Oceaniq. Место, куда хочется возвращ"
+          "title": "Для меня важно не просто инвестировать, а создавать активы, которые приносят доход и одновременно улучшают качество жизни. Именно поэтому я выбрал юг Бали и проект Oceaniq. Место, куда хочется возвращ",
+          "likes": 1234,
+          "comments": 14,
+          "shares": 253,
+          "reposts": 24,
+          "saves": 236,
+          "metricsObservedAt": "2026-11-16T16:55:53.971358+00:00",
+          "kind": "reel"
+        },
+        {
+          "kind": "carousel",
+          "date": "2026-11-13T15:44:52.000Z",
+          "url": "https://www.instagram.com/p/Dfr-5b5iMQ2/",
+          "title": "Братцы, ИИ-революция уже идет. И чтобы оставаться на передовой, нужно изучать новые технологии, учиться у практиков и внедрять их в свой бизнес. Почему это важно сейчас? Листайте карусель.",
+          "slideCount": 8,
+          "slideKinds": [
+            "image",
+            "image",
+            "image",
+            "image",
+            "image",
+            "image",
+            "image",
+            "image"
+          ],
+          "metricsObservedAt": "2026-11-16T16:57:19.403815+00:00",
+          "views": null,
+          "likes": 487,
+          "comments": 8,
+          "shares": 77,
+          "reposts": 15,
+          "saves": null
         },
         {
           "date": "2026-11-12T09:13:22.000Z",
-          "views": 347111,
+          "views": 347211,
           "url": "https://www.instagram.com/reel/DfkEh4JoJ9-/",
-          "title": "Публикация без подписи"
+          "title": "Публикация без подписи",
+          "likes": 9952,
+          "comments": 204,
+          "shares": 1319,
+          "reposts": 232,
+          "saves": 2299,
+          "metricsObservedAt": "2026-11-16T16:55:53.809375+00:00",
+          "kind": "reel"
         },
         {
           "date": "2026-11-11T11:27:10.000Z",
-          "views": 524089,
+          "views": 524151,
           "url": "https://www.instagram.com/reel/DfU1gZ1IruZ/",
-          "title": "Полный выпуск ищите на YouTube по запросу «Арена Единорогов 11»"
+          "title": "Полный выпуск ищите на YouTube по запросу «Арена Единорогов 11»",
+          "likes": 5449,
+          "comments": 240,
+          "shares": 2075,
+          "reposts": 65,
+          "saves": 1161,
+          "metricsObservedAt": "2026-11-16T16:55:53.992208+00:00",
+          "kind": "reel"
+        },
+        {
+          "kind": "carousel",
+          "date": "2026-11-10T16:02:58.000Z",
+          "url": "https://www.instagram.com/p/DfkSlYhiCqE/",
+          "title": "Я был первым инвестором компании, которой ещё даже не существовало. А спустя несколько лет смотрел, как её капитализация достигла 12 млрд евро. Уже без меня. Эту историю я подробно рассказываю в своей",
+          "slideCount": 8,
+          "slideKinds": [
+            "image",
+            "image",
+            "image",
+            "image",
+            "image",
+            "image",
+            "image",
+            "image"
+          ],
+          "metricsObservedAt": "2026-11-16T16:57:19.285404+00:00",
+          "views": null,
+          "likes": 893,
+          "comments": 30,
+          "shares": 37,
+          "reposts": null,
+          "saves": null
         }
       ]
     }

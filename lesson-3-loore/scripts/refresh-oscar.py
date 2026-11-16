@@ -16,6 +16,7 @@ REQUESTS = {
     'yt_channel': {'channel_id': CHANNEL_ID},
     'yt_channel_videos': {'channel_id': CHANNEL_ID, 'sort': 'latest'},
     'yt_channel_shorts': {'channel_id': CHANNEL_ID, 'sort': 'newest'},
+    'ig_user_posts': {'username': HANDLE, 'include_caption': True, 'limit': 50},
     'ig_profile': {'username': HANDLE},
     'ig_user_reels': {'username': HANDLE, 'include_caption': True, 'limit': 24},
     'tg_channel': {'handle': HANDLE},
@@ -27,6 +28,10 @@ def fetch(name, cursor=None):
     args = dict(REQUESTS[name])
     if cursor:
         args["cursor"] = cursor
+    return call(name, args)
+
+
+def call(name, args):
     request = urllib.request.Request(
         'https://mcp.loore.ai/v1/' + name.replace('_', '-'),
         data=json.dumps(args).encode(),
@@ -60,7 +65,7 @@ def normalize(results, exact_dates):
     sources = [
         ('YouTube', 'yt_channel', 'channel', ['yt_channel_videos', 'yt_channel_shorts'], 'title', 'publishedAt'),
         ('Telegram', 'tg_channel', 'channel', ['tg_channel_posts'], 'text', 'publishedAt'),
-        ('Instagram', 'ig_profile', 'profile', ['ig_user_reels'], 'caption', 'takenAt'),
+        ('Instagram', 'ig_profile', 'profile', ['ig_user_reels', 'ig_user_posts'], 'caption', 'takenAt'),
     ]
     for platform, profile_key, profile_field, feeds, title_key, date_key in sources:
         profile = results[profile_key][profile_field]
@@ -79,11 +84,18 @@ def normalize(results, exact_dates):
                         continue
                     day = calendar_day(stamp)
                     dates.append(day)
+                    if feed == 'ig_user_posts' and item.get('kind') != 'carousel':
+                        continue
                     if start <= day <= today:
                         if platform == 'YouTube' and item.get('publishedText') and item.get('id') not in exact_dates:
                             gaps.append('Некоторые даты YouTube приблизительные')
                         posts[item['url']] = dict(date=stamp, views=item.get('views'), url=item['url'],
                             title=' '.join((item.get(title_key) or 'Публикация без подписи').split())[:200])
+                        if platform == 'Instagram':
+                            posts[item['url']].update({field: item.get(field) for field in INSTAGRAM_COUNTERS})
+                            posts[item['url']]['kind'] = 'carousel' if feed == 'ig_user_posts' else 'reel'
+                            if feed == 'ig_user_posts':
+                                posts[item['url']].update(slideCount=item.get('slideCount'), slideKinds=item.get('slideKinds'))
                 # Use the page tail, since Instagram can pin older posts at the top.
                 if (dates and dates[-1] < start) or not page.get('hasMore'):
                     break
@@ -102,6 +114,26 @@ def normalize(results, exact_dates):
                 timezone='Europe/Moscow', channels=channels)
 
 
+INSTAGRAM_COUNTERS = ('views', 'likes', 'comments', 'shares', 'reposts', 'saves')
+
+
+def enrich_instagram(snapshot, lookup):
+    channel = next(c for c in snapshot['channels'] if c['platform'] == 'Instagram')
+    for post in channel['posts']:
+        media, observed_at = lookup(post['url'])
+        if media['code'] != post['url'].rstrip('/').split('/')[-1]:
+            raise ValueError('Instagram returned a different publication')
+        for field in INSTAGRAM_COUNTERS:
+            post[field] = media.get(field, post.get(field))
+        post['metricsObservedAt'] = observed_at
+    return snapshot
+
+
+def lookup_media(url):
+    result = call('ig_media', {'media_url_or_code': url})
+    return result['media'], datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+
 def write_snapshot(path, snapshot):
     with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=path.parent, delete=False) as temp:
         json.dump(snapshot, temp, ensure_ascii=False, indent=2)
@@ -113,4 +145,5 @@ if __name__ == '__main__':
         results = dict(zip(REQUESTS, pool.map(fetch, REQUESTS)))
     with urllib.request.urlopen(FEED, timeout=30) as feed:
         dates = youtube_dates(feed.read())
-    write_snapshot(pathlib.Path(sys.argv[1]), normalize(results, dates))
+    snapshot = normalize(results, dates)
+    write_snapshot(pathlib.Path(sys.argv[1]), enrich_instagram(snapshot, lookup_media))
