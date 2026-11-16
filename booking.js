@@ -10,6 +10,12 @@
     const homes = [
       ['Сосна', 6000, 8000], ['Берёза', 8500, 10500], ['Кедр', 11000, 14000]
     ];
+    const extras = [
+      { name: 'Баня', unit: '2 часа', price: 4000 },
+      { name: 'Мангальный набор', unit: '1 комплект', price: 1500 },
+      { name: 'Прокат велосипедов', unit: 'пара на день', price: 1200 }
+    ];
+    const selectedExtras = new Set();
     const rub = value => value.toLocaleString('ru-RU') + ' ₽';
     const today = new Intl.DateTimeFormat('sv-SE', {timeZone:'Europe/Moscow'}).format(new Date());
     const date = key => new Date(key + 'T12:00:00Z');
@@ -38,10 +44,30 @@
       if(start&&end) for(let d=date(start); key(d)<end; d=next(d)){
         total+=homes[home][[5,6].includes(d.getUTCDay())?2:1]; nights++;
       }
-      widget.innerHTML='<div class="stay-calendar"><div class="stay-head"><strong>'+format(month,{month:'long',year:'numeric'})+'</strong><div><button type="button" data-nav="-1" aria-label="Предыдущий месяц" '+(key(month)<=key(monthOf(date(today)))?'disabled':'')+'>‹</button><button type="button" data-nav="1" aria-label="Следующий месяц">›</button></div></div><button type="button" class="stay-weekend" data-weekend>На выходные</button><div class="stay-grid">'+['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(x=>'<small>'+x+'</small>').join('')+cells.join('')+'</div></div><div class="stay-summary"><label>Домик<select aria-label="Выберите домик">'+homes.map(([name],i)=>'<option value="'+i+'" '+(home===i?'selected':'')+'>'+name+'</option>').join('')+'</select></label><p class="stay-rates">Вс–чт · '+rub(homes[home][1])+' за ночь<br>Пт–сб · '+rub(homes[home][2])+' за ночь</p><div aria-live="polite"><p>'+(start?(short(start)+' — '+(end?short(end):'выберите дату выезда')):'Выберите дату заезда в календаре')+'</p>'+(nights?'<p>Ночей: '+nights+'</p><strong class="stay-total">'+rub(total)+'</strong>':'')+'</div><button type="button" data-book '+(!nights||confirmed?'disabled':'')+'>'+(confirmed?'Даты выбраны':'Подтвердить выбор')+'</button><small role="status">'+(confirmed?'Демонстрация завершена. Домик «'+homes[home][0]+'», '+short(start)+' — '+short(end)+'. Итого '+rub(total)+'.':'Демо-бронирование без оплаты.')+'</small></div>';
+      const lodging = total;
+      const chosen = extras.filter((extra, index) => selectedExtras.has(index));
+      total += chosen.reduce((sum, extra) => sum + extra.price, 0);
+      const options = extras.map((extra, index) => `
+        <label class="stay-extra">
+          <input type="checkbox" data-extra="${index}" ${selectedExtras.has(index) ? 'checked' : ''}>
+          <span>${extra.name}<small>${extra.unit} · ${rub(extra.price)}</small></span>
+        </label>`).join('');
+      const breakdown = [
+        ['Проживание · ночей: ' + nights, lodging],
+        ...chosen.map(extra => [extra.name, extra.price])
+      ].map(([label, price]) => `<div><dt>${label}</dt><dd>${rub(price)}</dd></div>`).join('');
+      const extraSummary = chosen.length ? ' Дополнительно: ' + chosen.map(extra => extra.name.toLowerCase()).join(', ') + '.' : '';
+      widget.innerHTML='<div class="stay-calendar"><div class="stay-head"><strong>'+format(month,{month:'long',year:'numeric'})+'</strong><div><button type="button" data-nav="-1" aria-label="Предыдущий месяц" '+(key(month)<=key(monthOf(date(today)))?'disabled':'')+'>‹</button><button type="button" data-nav="1" aria-label="Следующий месяц">›</button></div></div><button type="button" class="stay-weekend" data-weekend>На выходные</button><div class="stay-grid">'+['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(x=>'<small>'+x+'</small>').join('')+cells.join('')+'</div></div><div class="stay-summary"><label>Домик<select aria-label="Выберите домик">'+homes.map(([name],i)=>'<option value="'+i+'" '+(home===i?'selected':'')+'>'+name+'</option>').join('')+'</select></label><p class="stay-rates">Вс–чт · '+rub(homes[home][1])+' за ночь<br>Пт–сб · '+rub(homes[home][2])+' за ночь</p><fieldset class="stay-extras"><legend>Дополнительно</legend>'+options+'</fieldset><div aria-live="polite"><p>'+(start?(short(start)+' — '+(end?short(end):'выберите дату выезда')):'Выберите дату заезда в календаре')+'</p>'+(nights?'<dl class="stay-breakdown">'+breakdown+'</dl><strong class="stay-total">Итого '+rub(total)+'</strong>':'')+'</div><button type="button" data-book '+(!nights||confirmed?'disabled':'')+'>'+(confirmed?'Даты выбраны':'Подтвердить выбор')+'</button><small role="status">'+(confirmed?'Демонстрация завершена. Домик «'+homes[home][0]+'», '+short(start)+' — '+short(end)+'.'+extraSummary+' Итого '+rub(total)+'.':'Демо-бронирование без оплаты.')+'</small></div>';
       if(focus) widget.querySelector(focus)?.focus({preventScroll:true});
     }
     widget.addEventListener('change',e=>{
+      if (e.target.matches('[data-extra]')) {
+        const index = Number(e.target.dataset.extra);
+        if (e.target.checked) selectedExtras.add(index);
+        else selectedExtras.delete(index);
+        confirmed = false;
+        render('[data-extra="' + index + '"]');
+      }
       if(e.target.matches('select')){home=Number(e.target.value);confirmed=false;render('select');}
     });
     widget.addEventListener('click',e=>{
