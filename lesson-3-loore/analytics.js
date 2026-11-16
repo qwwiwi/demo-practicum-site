@@ -13,12 +13,13 @@ function setupAnalytics(data, start, end) {
     for(const row of rows){const r=node("tr");for(const v of row)r.append(node("td",v));tbody.append(r);}
     host.replaceChildren(thead,tbody);
   }
-  const priorPeriod={start:"2026-11-03",end:"2026-11-09",currentStart:"2026-11-10",currentEnd:"2026-11-16",counts:{YouTube:0,Telegram:7,Instagram:5}};
+  const priorPeriod={start:"2026-11-03",end:"2026-11-09",currentStart:"2026-11-10",currentEnd:"2026-11-16",counts:{YouTube:0,Telegram:7,Instagram:8}};
   if(dateKey(start)===priorPeriod.currentStart && dateKey(end)===priorPeriod.currentEnd){
     const comparisonRows=channels.map(c=>[c.platform,priorPeriod.counts[c.platform],c.posts.length]);
+    if(typeof renderWeekComparison==="function")renderWeekComparison(comparisonRows,"3–9 ноября","10–16 ноября");
     comparisonRows.push(["Все площадки",comparisonRows.reduce((s,r)=>s+r[1],0),comparisonRows.reduce((s,r)=>s+r[2],0)]);
     table("comparison-table",["Площадка","3–9 ноября","10–16 ноября","Изменение","Рост"],comparisonRows.map(([name,before,now])=>[name,before,now,sign(now-before),before?sign(Math.round(1000*(now-before)/before)/10)+"%":"—"]));
-    el("comparison-hint").textContent="Количество публикаций. Последний день текущей недели учтён до "+stamp+" МСК. При нулевой базе рост в процентах не рассчитывается.";
+    el("comparison-hint").textContent="Instagram включает Reels и карусели в обеих неделях. Последний день текущей недели учтён до "+stamp+" МСК. При нулевой базе рост в процентах не рассчитывается.";
     el("comparison").hidden=false;
   }
   let frequency, historyLoaded=false;
@@ -43,10 +44,27 @@ function setupAnalytics(data, start, end) {
       return [c.platform,first.date+" → "+today,hasNumber(c.followers)&&hasNumber(prev.followers)?sign(c.followers-prev.followers):"—",matched.length?sign(matched.reduce((sum,p)=>sum+p.views-oldViews.get(p.url),0)):"—",matched.length];
     }));
   }
+  for (const c of channels) el("activity-platform").append(node("option",c.platform));
+  function renderActivity(){
+    const cumulative=el("activity-mode").value==="cumulative";
+    const platform=el("activity-platform").value;
+    const datasets=channels.flatMap((c,i)=>{
+      if(platform!=="Все"&&platform!==c.platform)return [];
+      let sum=0;
+      const color=colors[c.platform.toLowerCase()];
+      return [{label:c.platform,data:counts[i].map(v=>cumulative?(sum+=v):v),borderColor:color,backgroundColor:color,borderWidth:cumulative?3:0,pointRadius:4}];
+    });
+    frequency?.destroy();
+    frequency=new Chart(el("frequency"),{type:cumulative?"line":"bar",data:{labels:dayLabels,datasets},options:{responsive:true,maintainAspectRatio:false,animation:false,scales:{x:{stacked:!cumulative,grid:{display:false}},y:{stacked:!cumulative,beginAtZero:true,ticks:{precision:0}}}}});
+  }
+  el("activity-platform").onchange=renderActivity;
+  el("activity-mode").onchange=renderActivity;
+  let instagramReady=false;
   function activate(show){
     el("view-posts").setAttribute("aria-pressed",String(!show));el("view-analytics").setAttribute("aria-pressed",String(show));
     el("analytics").hidden=!show;el("metrics").hidden=show;el("history").hidden=show;
-    if(show&&!frequency&&window.Chart)frequency=new Chart(el("frequency"),{type:"bar",data:{labels:dayLabels,datasets:channels.map((c,i)=>({label:c.platform,data:counts[i],backgroundColor:colors[c.platform.toLowerCase()]||"#555"}))},options:{responsive:true,maintainAspectRatio:false,animation:false,scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:true,ticks:{precision:0}}}}});
+    if(show&&!instagramReady&&typeof setupInstagramMetrics==="function"){setupInstagramMetrics(data);instagramReady=true;}
+    if(show&&!frequency&&window.Chart){renderActivity();comparisonCharts(channels);}
     if(show&&!historyLoaded){historyLoaded=true;growth();}
   }
   el("view-posts").onclick=()=>activate(false);el("view-analytics").onclick=()=>activate(true);
